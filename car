@@ -1,0 +1,168 @@
+from abc import ABC, abstractmethod
+
+# ==================== محصولات انتزاعی (Abstract Products) ====================
+
+# محصول انتزاعی: SUV
+class SUV(ABC):
+    @abstractmethod
+    def get_specs(self):
+        pass
+    
+    @abstractmethod
+    def get_price_range(self):
+        pass
+
+# محصول انتزاعی: Coupe
+class Coupe(ABC):
+    @abstractmethod
+    def get_specs(self):
+        pass
+    
+    @abstractmethod
+    def get_price_range(self):
+        pass
+
+# ==================== محصولات خاص (Concrete Products) ====================
+
+# Benz SUV
+class BenzSUV(SUV):
+    def get_specs(self):
+        return "Benz GLE: Luxury SUV with 4MATIC all-wheel drive"
+    
+    def get_price_range(self):
+        return "$70,000 - $100,000"
+
+# BMW SUV
+class BMWSUV(SUV):
+    def get_specs(self):
+        return "BMW X5: Performance SUV with xDrive system"
+    
+    def get_price_range(self):
+        return "$60,000 - $85,000"
+
+# Benz Coupe
+class BenzCoupe(Coupe):
+    def get_specs(self):
+        return "Benz C-Class Coupe: Elegant design with AMG performance"
+    
+    def get_price_range(self):
+        return "$50,000 - $75,000"
+
+# BMW Coupe
+class BMWCoupe(Coupe):
+    def get_specs(self):
+        return "BMW 4 Series Coupe: Sporty design with M Sport package"
+    
+    def get_price_range(self):
+        return "$45,000 - $70,000"
+
+# ==================== کارخانه انتزاعی (Abstract Factory) ====================
+
+# کارخانه انتزاعی
+class CarFactory(ABC):
+    @abstractmethod
+    def create_suv(self) -> SUV:
+        pass
+    
+    @abstractmethod
+    def create_coupe(self) -> Coupe:
+        pass
+
+# ==================== کارخانه‌های خاص (Concrete Factories) ====================
+
+# کارخانه Benz
+class BenzFactory(CarFactory):
+    def create_suv(self) -> SUV:
+        return BenzSUV()
+    
+    def create_coupe(self) -> Coupe:
+        return BenzCoupe()
+
+# کارخانه BMW
+class BMWFactory(CarFactory):
+    def create_suv(self) -> SUV:
+        return BMWSUV()
+    
+    def create_coupe(self) -> Coupe:
+        return BMWCoupe()
+
+# ==================== سیستم مدیریت خودرو (Client) ====================
+
+# سیستم مدیریت خودرو
+class CarManagementSystem:
+    def __init__(self, factory: CarFactory):
+        self.factory = factory
+    
+    def show_suv_catalog(self):
+        suv = self.factory.create_suv()
+        print("=== SUV Catalog ===")
+        print(f"Specifications: {suv.get_specs()}")
+        print(f"Price Range: {suv.get_price_range()}")
+        print()
+    
+    def show_coupe_catalog(self):
+        coupe = self.factory.create_coupe()
+        print("=== Coupe Catalog ===")
+        print(f"Specifications: {coupe.get_specs()}")
+        print(f"Price Range: {coupe.get_price_range()}")
+        print()
+    
+    def show_complete_catalog(self):
+        self.show_suv_catalog()
+        self.show_coupe_catalog()
+
+# ==================== استفاده عملی (Main Function) ====================
+
+def main():
+    print("🚗 Welcome to Car Management System! 🚗\n")
+    
+    # انتخاب برند توسط مشتری
+    while True:
+        print("Please select a brand:")
+        print("1. Mercedes-Benz")
+        print("2. BMW")
+        print("3. Exit")
+        
+        choice = input("Enter your choice (1-3): ")
+        
+        if choice == "1":
+            print("\n🌟 Selected Brand: Mercedes-Benz")
+            factory = BenzFactory()
+            car_system = CarManagementSystem(factory)
+            
+        elif choice == "2":
+            print("\n🌟 Selected Brand: BMW")
+            factory = BMWFactory()
+            car_system = CarManagementSystem(factory)
+            
+        elif choice == "3":
+            print("Thank you for using our system! 👋")
+            break
+            
+        else:
+            print("Invalid choice! Please try again.\n")
+            continue
+        
+        # نمایش کاتالوگ خودروها
+        while True:
+            print("\nWhat would you like to see?")
+            print("1. SUV Catalog")
+            print("2. Coupe Catalog")
+            print("3. Complete Catalog")
+            print("4. Change Brand")
+            
+            sub_choice = input("Enter your choice (1-4): ")
+            
+            if sub_choice == "1":
+                car_system.show_suv_catalog()
+            elif sub_choice == "2":
+                car_system.show_coupe_catalog()
+            elif sub_choice == "3":
+                car_system.show_complete_catalog()
+            elif sub_choice == "4":
+                break
+            else:
+                print("Invalid choice! Please try again.")
+
+if __name__ == "__main__":
+    main()
